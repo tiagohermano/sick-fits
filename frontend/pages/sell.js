@@ -1,10 +1,9 @@
-import React from 'react';
-import Link from 'next/link';
+import CreateItem from '../components/CreateItem';
 
 export default function Sell() {
   return (
     <div>
-      <p>Sell!</p>
+      <CreateItem />
     </div>
   );
 }
