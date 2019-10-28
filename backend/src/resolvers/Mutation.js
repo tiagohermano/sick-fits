@@ -99,7 +99,6 @@ const Mutation = {
         resetTokenExpiry
       }
     });
-    console.log(res);
     return { message: "Success!" };
   },
   async resetPassword(parent, args, ctx, info) {
