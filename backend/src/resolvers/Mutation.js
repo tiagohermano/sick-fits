@@ -7,9 +7,19 @@ const { transport, makeANiceEmail } = require('../mail');
 const Mutation = {
   async createItem(parent, args, ctx, info) {
     // TODO: check if the user is logged in
+    if(!ctx.request.userId) {
+      throw new Error('You must be logged in to do that!');
+    }
+
     const item = await ctx.db.mutation.createItem(
       {
         data: {
+          // This is how is created a relationship between the Item and the User
+          user: {
+            connect: {
+              id: ctx.request.userId
+            }
+          },
           ...args
         }
       },
@@ -106,7 +116,7 @@ const Mutation = {
       to: user.email,
       suject: 'Your Password Reset Token',
       html: makeANiceEmail(`Your Password Reset Token is here! \n\n 
-      <a href="${process.env.FRONTEND_URL}/reset?resetToken=${resetToken}"></a>`)
+      <a href="${process.env.FRONTEND_URL}/reset?resetToken=${resetToken}">Click here to reset your password</a>`)
     })
 
     return { message: "Success!" };
