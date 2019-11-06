@@ -1,5 +1,5 @@
 # source: https://us1.prisma.sh/tiago-hermano-188b73/sick-fits-backend/sick-fits-staging
-# timestamp: Mon Nov 04 2019 17:51:41 GMT-0200 (GMT-02:00)
+# timestamp: Wed Nov 06 2019 16:58:07 GMT-0200 (GMT-02:00)
 
 type AggregateCartItem {
   count: Int!
@@ -39,7 +39,18 @@ input CartItemCreateInput {
   id: ID
   quantity: Int
   item: ItemCreateOneInput!
-  user: UserCreateOneInput!
+  user: UserCreateOneWithoutCartInput!
+}
+
+input CartItemCreateManyWithoutUserInput {
+  create: [CartItemCreateWithoutUserInput!]
+  connect: [CartItemWhereUniqueInput!]
+}
+
+input CartItemCreateWithoutUserInput {
+  id: ID
+  quantity: Int
+  item: ItemCreateOneInput!
 }
 
 """An edge in a connection."""
@@ -61,6 +72,79 @@ enum CartItemOrderByInput {
 type CartItemPreviousValues {
   id: ID!
   quantity: Int!
+}
+
+input CartItemScalarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [CartItemScalarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [CartItemScalarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [CartItemScalarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  quantity: Int
+
+  """All values that are not equal to given value."""
+  quantity_not: Int
+
+  """All values that are contained in given list."""
+  quantity_in: [Int!]
+
+  """All values that are not contained in given list."""
+  quantity_not_in: [Int!]
+
+  """All values less than the given value."""
+  quantity_lt: Int
+
+  """All values less than or equal the given value."""
+  quantity_lte: Int
+
+  """All values greater than the given value."""
+  quantity_gt: Int
+
+  """All values greater than or equal the given value."""
+  quantity_gte: Int
 }
 
 type CartItemSubscriptionPayload {
@@ -105,11 +189,48 @@ input CartItemSubscriptionWhereInput {
 input CartItemUpdateInput {
   quantity: Int
   item: ItemUpdateOneRequiredInput
-  user: UserUpdateOneRequiredInput
+  user: UserUpdateOneRequiredWithoutCartInput
+}
+
+input CartItemUpdateManyDataInput {
+  quantity: Int
 }
 
 input CartItemUpdateManyMutationInput {
   quantity: Int
+}
+
+input CartItemUpdateManyWithoutUserInput {
+  create: [CartItemCreateWithoutUserInput!]
+  connect: [CartItemWhereUniqueInput!]
+  set: [CartItemWhereUniqueInput!]
+  disconnect: [CartItemWhereUniqueInput!]
+  delete: [CartItemWhereUniqueInput!]
+  update: [CartItemUpdateWithWhereUniqueWithoutUserInput!]
+  updateMany: [CartItemUpdateManyWithWhereNestedInput!]
+  deleteMany: [CartItemScalarWhereInput!]
+  upsert: [CartItemUpsertWithWhereUniqueWithoutUserInput!]
+}
+
+input CartItemUpdateManyWithWhereNestedInput {
+  where: CartItemScalarWhereInput!
+  data: CartItemUpdateManyDataInput!
+}
+
+input CartItemUpdateWithoutUserDataInput {
+  quantity: Int
+  item: ItemUpdateOneRequiredInput
+}
+
+input CartItemUpdateWithWhereUniqueWithoutUserInput {
+  where: CartItemWhereUniqueInput!
+  data: CartItemUpdateWithoutUserDataInput!
+}
+
+input CartItemUpsertWithWhereUniqueWithoutUserInput {
+  where: CartItemWhereUniqueInput!
+  update: CartItemUpdateWithoutUserDataInput!
+  create: CartItemCreateWithoutUserInput!
 }
 
 input CartItemWhereInput {
@@ -723,6 +844,7 @@ type User implements Node {
   resetToken: String
   resetTokenExpiry: Float
   permissions: [Permission!]!
+  cart(where: CartItemWhereInput, orderBy: CartItemOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [CartItem!]
 }
 
 """A connection to a list of items."""
@@ -743,6 +865,7 @@ input UserCreateInput {
   resetToken: String
   resetTokenExpiry: Float
   permissions: UserCreatepermissionsInput
+  cart: CartItemCreateManyWithoutUserInput
 }
 
 input UserCreateOneInput {
@@ -750,8 +873,23 @@ input UserCreateOneInput {
   connect: UserWhereUniqueInput
 }
 
+input UserCreateOneWithoutCartInput {
+  create: UserCreateWithoutCartInput
+  connect: UserWhereUniqueInput
+}
+
 input UserCreatepermissionsInput {
   set: [Permission!]
+}
+
+input UserCreateWithoutCartInput {
+  id: ID
+  name: String!
+  email: String!
+  password: String!
+  resetToken: String
+  resetTokenExpiry: Float
+  permissions: UserCreatepermissionsInput
 }
 
 """An edge in a connection."""
@@ -834,6 +972,7 @@ input UserUpdateDataInput {
   resetToken: String
   resetTokenExpiry: Float
   permissions: UserUpdatepermissionsInput
+  cart: CartItemUpdateManyWithoutUserInput
 }
 
 input UserUpdateInput {
@@ -843,6 +982,7 @@ input UserUpdateInput {
   resetToken: String
   resetTokenExpiry: Float
   permissions: UserUpdatepermissionsInput
+  cart: CartItemUpdateManyWithoutUserInput
 }
 
 input UserUpdateManyMutationInput {
@@ -861,13 +1001,34 @@ input UserUpdateOneRequiredInput {
   upsert: UserUpsertNestedInput
 }
 
+input UserUpdateOneRequiredWithoutCartInput {
+  create: UserCreateWithoutCartInput
+  connect: UserWhereUniqueInput
+  update: UserUpdateWithoutCartDataInput
+  upsert: UserUpsertWithoutCartInput
+}
+
 input UserUpdatepermissionsInput {
   set: [Permission!]
+}
+
+input UserUpdateWithoutCartDataInput {
+  name: String
+  email: String
+  password: String
+  resetToken: String
+  resetTokenExpiry: Float
+  permissions: UserUpdatepermissionsInput
 }
 
 input UserUpsertNestedInput {
   update: UserUpdateDataInput!
   create: UserCreateInput!
+}
+
+input UserUpsertWithoutCartInput {
+  update: UserUpdateWithoutCartDataInput!
+  create: UserCreateWithoutCartInput!
 }
 
 input UserWhereInput {
@@ -1101,6 +1262,9 @@ input UserWhereInput {
 
   """All values greater than or equal the given value."""
   resetTokenExpiry_gte: Float
+  cart_every: CartItemWhereInput
+  cart_some: CartItemWhereInput
+  cart_none: CartItemWhereInput
 }
 
 input UserWhereUniqueInput {

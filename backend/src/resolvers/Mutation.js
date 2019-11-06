@@ -202,8 +202,8 @@ const Mutation = {
       return ctx.db.mutation.updateCartItem({ 
         where: {
           id: existingCartItem.id,
-          data: { quantity: existingCartItem.quantity+1 }
-        }
+        },
+        data: { quantity: existingCartItem.quantity+1 }
       }, info)
     }
     // 4. If its not, create a fresh CartItem for that user
