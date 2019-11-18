@@ -35,7 +35,16 @@ const Query = {
     if(!ownsOrder || !hasPermissionToSeeOrder) throw Error('You do not have permission to see this Order.');
     // 4. Return the order
     return currentOrder;
-  }
+  },
+  async orders(parent, args, ctx, info) {
+    const { userId } = ctx.request;
+    isUserLoggedin(ctx);
+    return ctx.db.query.orders({ 
+      where: {
+        user: { id: userId }
+      }
+    }, info);
+  } 
 };
 
 module.exports = Query;
